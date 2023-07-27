@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  proxy:
+    build: ./src
+    ports:
+      - "12345:12345"
+    volumes:
+        - ./logs:/var/log/erss:rw
+    working_dir: /src/http_caching_proxy/
+    command: ./run.sh

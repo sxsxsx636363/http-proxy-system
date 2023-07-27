@@ -1,0 +1,57 @@
+Danger_log 
+ECE 568: homework 2
+
+Yuchen Zhang (yz674)
+Xin Shu (xs106)
+
+-The socket file descripters might left open after the connection ends, either because the programmer forgets it or the connection failed because of errors
+
+We use RAII to manage socket fds. All the socket fds are wrapped in class SocketWrapper, the destructor of which is to close() the socket fd that owns. Every time we create a new socket fd, we wrap it into a std::shared_ptr<SocketWrapper>, then we don't need to care about closing it anymore - when it goes out of scope, the smart pointer automatically calls the dtor, which close the socket.
+
+-Since the project uses multi-thread, the thread might exit at any time because of any reason, and the resources related to that thread might not be released properly
+
+Similar to the last question, we use RAII to handle the resources, including HttpRequest, HttpResponse, and socket_fds as mentioned above. All of these are wrapped in std::shared_ptr, and will be released once get out of scope. The thread itself is also wrapped in std::thread, which means we don't need to worry too much about the resource management.
+
+-There are many places in the project that calls cache and logger. However, we need to make sure that there is only one of each of them in the whole program.
+
+We use Singleton mode to design these two classes, which ensures that there will always only one of these instances. To be thread-safe, we uses lazy-initialization of the static instance.
+
+-recv() and send() may fail (return < 0)
+
+Here comes another benefit that we uses std::shared_ptr to wrap HttpRequest and HttpResponse - if recv() or send() fails, we could easily return a nullptr which indicates failure, then handle that circumstance. Note that we don't need to close() the socket_fd everytime we met a failure - std::shared_ptr has already done that!
+
+-Each request needs a unique ID, how to make it thread-safe?
+
+The generation of unique ID is quite straightforward - just increase the static member ID of HttpRequest by 1 everytime receives a new request. To make it thread-safe, we change the ID's type to std::atomic<unsigned int>, which overloads the operator to make the ++ operation atomic, thus thread-safe.
+
+-How about implementing a thread-safe cache?
+
+C++ does not provide read/write lock in its standard library (...OK, at least not for C++11), but we can use boost::shared_mutex to implement one. boost::shared_lock allows multiple read operations at the same time (all of them getting the mutex), while boost::unique_lock only allows one write operation (and no read operations can get the mutex at the same time).
+
+-What if the Http request is malformed?
+
+We use a parser to parse the request. If it is malformed, it just returns false - and we stop further handling that request and return BAD_REQUEST_400.
+
+-What if the Http response is malformed?
+
+Similarly, if the parser returns false, we stop further handling that and return BAD_GATEWAY_502.
+
+-What if getaddrinfo() fails and we are still freeing that struct that supposed to be filled with addrinfo?
+
+This problem causes segfault in some special cases. To fix that, I use Boost library to do the DNS lookup, and there's no need to free any space.
+
+-What if the content-length of the response is (much) larger than its actual body length?
+
+That will be a problem since we are using while loop to wait for receiving all the message. We didn't handle this situation in this project (ref: https://edstem.org/us/courses/32653/discussion/2661489), but maybe it's better to add something like global timeout for each thread so that the thread won't wait forever in that situation.
+
+-What if the response contains expires header that does not use UTC?
+
+That's an interesting bug we've found when we manipulate with the time-related string - it is also possible to mess up with Daylight Saving Time. To solve this, we need to set correct argument for functions like strptime(), etc.
+
+-What exception guarantee do we make?
+
+Strong guarantee: No side-effects if an exception is thrown. We make validations before any cache-related operations (note that reading the cache also changes it since we use LRU policy) to make sure that objects are unmodified if any exception happens. We use std::shared_ptr for resource management to avoid memory leak.
+
+-Any extra tests?
+
+We are just trying to be honest here - there is just one case that we cannot guarantee the robustness of the server. If the process is run as a daemon in the docker, if you click on refresh button really fast when receiving a chunked-message, the process will possibly exit. However, if you run the process without making it a daemon, it could just stay robust in that situation. If you really want to test that case, try run the program without making it a daemon :)

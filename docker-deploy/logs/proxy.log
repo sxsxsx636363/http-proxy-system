@@ -1,0 +1,46 @@
+1: Tunnel closed
+2: Tunnel closed
+3: Tunnel closed
+4: Tunnel closed
+5: Tunnel closed
+6: Tunnel closed
+7: Tunnel closed
+8: Tunnel closed
+9: Tunnel closed
+10: Tunnel closed
+11: Tunnel closed
+12: Tunnel closed
+13: Tunnel closed
+14: Tunnel closed
+16: "GET http://shinyglowinglushstars.neverssl.com/online HTTP/1.1" from 34.223.124.45 @ Wed Mar  1 04:02:29 2023
+16: not in cache
+16: "GET http://shinyglowinglushstars.neverssl.com/online HTTP/1.1" from 34.223.124.45 @ Wed Mar  1 04:02:29 2023
+16: Requesting "GET http://shinyglowinglushstars.neverssl.com/online HTTP/1.1" from shinyglowinglushstars.neverssl.com
+16: Received "HTTP/1.1 301 Moved Permanently" from http://shinyglowinglushstars.neverssl.com/online
+16: Responding "HTTP/1.1 301 Moved Permanently"
+19: "GET http://shinyglowinglushstars.neverssl.com/online/ HTTP/1.1" from 34.223.124.45 @ Wed Mar  1 04:02:29 2023
+19: not in cache
+19: "GET http://shinyglowinglushstars.neverssl.com/online/ HTTP/1.1" from 34.223.124.45 @ Wed Mar  1 04:02:29 2023
+19: Requesting "GET http://shinyglowinglushstars.neverssl.com/online/ HTTP/1.1" from shinyglowinglushstars.neverssl.com
+19: Received "HTTP/1.1 200 OK" from http://shinyglowinglushstars.neverssl.com/online/
+19: cached, but requires re-validation
+19: Responding "HTTP/1.1 200 OK"
+20: "GET http://shinyglowinglushstars.neverssl.com/favicon.ico HTTP/1.1" from 34.223.124.45 @ Wed Mar  1 04:02:29 2023
+20: not in cache
+20: "GET http://shinyglowinglushstars.neverssl.com/favicon.ico HTTP/1.1" from 34.223.124.45 @ Wed Mar  1 04:02:29 2023
+20: Requesting "GET http://shinyglowinglushstars.neverssl.com/favicon.ico HTTP/1.1" from shinyglowinglushstars.neverssl.com
+15: Tunnel closed
+17: Tunnel closed
+18: Tunnel closed
+20: Received "HTTP/1.1 200 OK" from http://shinyglowinglushstars.neverssl.com/favicon.ico
+20: cached, but requires re-validation
+20: Responding "HTTP/1.1 200 OK"
+21: Tunnel closed
+22: Tunnel closed
+23: Tunnel closed
+24: Tunnel closed
+25: ERROR agent::GetResp() HttpClient init() error
+25: ERROR HttpServer::process() HttpClient error within getCorrespondResp()
+26: ERROR agent::GetResp() HttpClient init() error
+26: ERROR HttpServer::process() HttpClient error within getCorrespondResp()
+27: Tunnel closed
